@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    // Die offizielle Ruff-Erweiterung von Astral Software
+    "charliermarsh.ruff",
+    // Error Lens, um Linter-Fehler direkt im Editor anzuzeigen
+    "usernamehw.errorlens",
+    // Python-Sprachunterstützung (falls noch nicht installiert)
+    "ms-python.python"
+  ]
+}

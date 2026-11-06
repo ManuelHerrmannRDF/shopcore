@@ -1,0 +1,12 @@
+{
+    "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
+  },
+  // Wichtig: Zwingt die VS Code Extension, die Regeln aus der pyproject.toml zu priorisieren
+  "ruff.configurationPreference": "filesystemFirst",
+}
