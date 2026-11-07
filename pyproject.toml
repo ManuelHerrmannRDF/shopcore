@@ -24,3 +24,8 @@ select = ["E", "F", "I"]
 [tool.ruff.format]
 # Einstellungen für den Formatter (z.B. ob Single- oder Double-Quotes)
 quote-style = "double"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
