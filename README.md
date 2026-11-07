@@ -1,4 +1,4 @@
-# Shopcore
+# 🛍️ Shopcore
 
 ## Getting Started
 
