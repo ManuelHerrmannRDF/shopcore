@@ -1,0 +1,6 @@
+# Ignore everything by default
+*
+
+# Un-ignore the specific files you want to keep
+!.gitignore
+!index.html

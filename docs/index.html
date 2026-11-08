@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ShopCore — Ein praxisnaher Kurs zum Testen mit Python und pytest</title>
+  <style>
+    :root {
+      --ink: #172334;
+      --muted: #586779;
+      --paper: #fbfcfe;
+      --panel: #fff;
+      --line: #dce4ed;
+      --blue: #2457a6;
+      --blue-soft: #eaf2ff;
+      --teal: #16766f;
+      --teal-soft: #e7f6f3;
+      --amber: #8b5b09;
+      --amber-soft: #fff4d9;
+      --code: #111c2c;
+      --code-ink: #e7edf7;
+      --shadow: 0 10px 28px rgba(22, 42, 70, .07);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px
+    }
+
+    a:hover {
+      text-decoration-thickness: 2px
+    }
+
+    header.hero {
+      background: linear-gradient(130deg, #14253b 0%, #234d81 65%, #236f78 100%);
+      color: white;
+      padding: clamp(2rem, 6vw, 5rem) 1.25rem
+    }
+
+    .hero-inner,
+    .layout {
+      max-width: 1180px;
+      margin: auto
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .13em;
+      font-size: .76rem;
+      font-weight: 750;
+      opacity: .8
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4.2rem);
+      line-height: 1.07;
+      max-width: 850px;
+      margin: .5rem 0 1rem;
+      letter-spacing: -.035em
+    }
+
+    .hero p {
+      max-width: 760px;
+      font-size: 1.15rem;
+      color: #e4edf8
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: .65rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem
+    }
+
+    .hero-meta span {
+      border: 1px solid #ffffff55;
+      border-radius: 999px;
+      padding: .35rem .75rem;
+      font-size: .85rem
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 255px minmax(0, 1fr);
+      gap: 2rem;
+      padding: 2rem 1.25rem 5rem
+    }
+
+    nav {
+      align-self: start;
+      position: sticky;
+      top: 1rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      max-height: calc(100vh - 2rem);
+      overflow: auto
+    }
+
+    nav strong {
+      display: block;
+      margin: .2rem .5rem .7rem
+    }
+
+    nav a {
+      display: block;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: .9rem;
+      padding: .45rem .55rem;
+      border-radius: 8px
+    }
+
+    nav a:hover {
+      background: var(--blue-soft);
+      color: var(--blue)
+    }
+
+    main {
+      min-width: 0
+    }
+
+    section {
+      scroll-margin-top: 1.2rem;
+      margin-bottom: 2.2rem
+    }
+
+    h2 {
+      font-size: clamp(1.55rem, 3vw, 2.1rem);
+      letter-spacing: -.025em;
+      line-height: 1.2;
+      margin: 0 0 .8rem
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      line-height: 1.3;
+      margin: 1.35rem 0 .55rem
+    }
+
+    h4 {
+      margin: .4rem 0;
+      font-size: 1rem
+    }
+
+    p {
+      margin: .6rem 0 1rem
+    }
+
+    .lead {
+      font-size: 1.08rem;
+      color: var(--muted)
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.35rem;
+      margin: 1rem 0;
+      box-shadow: var(--shadow)
+    }
+
+    .story {
+      border-left: 4px solid var(--blue);
+      background: var(--blue-soft);
+      padding: 1rem 1.2rem;
+      border-radius: 0 12px 12px 0;
+      margin: 1rem 0
+    }
+
+    .callout {
+      border-left: 4px solid var(--teal);
+      background: var(--teal-soft);
+      padding: 1rem 1.2rem;
+      border-radius: 0 12px 12px 0;
+      margin: 1rem 0
+    }
+
+    .warning {
+      border-left: 4px solid #d59a22;
+      background: var(--amber-soft);
+      padding: 1rem 1.2rem;
+      border-radius: 0 12px 12px 0;
+      margin: 1rem 0
+    }
+
+    .small {
+      font-size: .9rem;
+      color: var(--muted)
+    }
+
+    .pill {
+      display: inline-block;
+      background: #edf1f6;
+      color: #405066;
+      border-radius: 999px;
+      padding: .16rem .55rem;
+      font-size: .78rem;
+      font-weight: 700;
+      margin: .1rem .2rem .1rem 0
+    }
+
+    .chapter {
+      border-top: 1px solid var(--line);
+      padding-top: 1.7rem
+    }
+
+    .chapter-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem
+    }
+
+    .num {
+      flex: 0 0 2.35rem;
+      height: 2.35rem;
+      border-radius: 11px;
+      background: var(--blue);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-weight: 800
+    }
+
+    .chapter-head .sub {
+      margin-top: .1rem;
+      color: var(--muted);
+      font-size: .9rem
+    }
+
+    ul,
+    ol {
+      padding-left: 1.35rem
+    }
+
+    li {
+      margin: .35rem 0
+    }
+
+    pre {
+      background: var(--code);
+      color: var(--code-ink);
+      border-radius: 12px;
+      padding: 1rem;
+      overflow: auto;
+      font: .89rem/1.55 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      margin: 1rem 0
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: .92em
+    }
+
+    :not(pre)>code {
+      background: #edf1f6;
+      color: #25364b;
+      padding: .12rem .32rem;
+      border-radius: 5px
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      background: white
+    }
+
+    th,
+    td {
+      border: 1px solid var(--line);
+      padding: .7rem .8rem;
+      text-align: left;
+      vertical-align: top
+    }
+
+    th {
+      background: #f0f4f9
+    }
+
+    details {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      margin: .8rem 0;
+      padding: .8rem 1rem
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700
+    }
+
+    details p:last-child,
+    details ul:last-child {
+      margin-bottom: .2rem
+    }
+
+    .checklist label {
+      display: flex;
+      gap: .6rem;
+      align-items: flex-start;
+      margin: .5rem 0
+    }
+
+    .checklist input {
+      margin-top: .35rem;
+      accent-color: var(--blue)
+    }
+
+    .quiz-question {
+      min-width: 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+      margin: 1.5rem 0;
+      padding: 1rem 0 0
+    }
+
+    .quiz-question legend {
+      padding: 0 .4rem 0 0;
+      font-weight: 700
+    }
+
+    .quiz-question label {
+      display: flex;
+      align-items: flex-start;
+      gap: .65rem;
+      padding: .4rem .5rem;
+      cursor: pointer
+    }
+
+    .quiz-question label:hover {
+      background: var(--blue-soft)
+    }
+
+    .quiz-question label span {
+      min-width: 0;
+      overflow-wrap: anywhere
+    }
+
+    .quiz-question input {
+      flex: 0 0 auto;
+      margin-top: .4rem;
+      accent-color: var(--blue)
+    }
+
+    .quiz-feedback {
+      margin: .5rem 0 0;
+      padding: .65rem .8rem;
+      border-left: 3px solid var(--teal);
+      background: var(--teal-soft)
+    }
+
+    .quiz-feedback.incorrect {
+      border-color: var(--amber);
+      background: var(--amber-soft)
+    }
+
+    .quiz-feedback:empty {
+      display: none
+    }
+
+    .quiz-reset {
+      border: 1px solid var(--blue);
+      border-radius: 6px;
+      background: var(--blue);
+      color: white;
+      padding: .65rem 1rem;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .quiz-reset:focus-visible {
+      outline: 3px solid var(--teal);
+      outline-offset: 3px
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 1.5rem;
+      color: var(--muted);
+      text-align: center;
+      font-size: .9rem
+    }
+
+    @media(max-width:850px) {
+      .layout {
+        grid-template-columns: 1fr
+      }
+
+      nav {
+        position: static;
+        max-height: none
+      }
+
+      nav .navlinks {
+        columns: 2
+      }
+    }
+
+    @media(max-width:560px) {
+      .grid2 {
+        grid-template-columns: 1fr
+      }
+
+      nav .navlinks {
+        columns: 1
+      }
+
+      .layout {
+        padding-left: 1rem;
+        padding-right: 1rem
+      }
+
+      pre {
+        font-size: .82rem
+      }
+    }
+
+    @media print {
+      nav {
+        display: none
+      }
+
+      .layout {
+        display: block;
+        max-width: none
+      }
+
+      header.hero {
+        background: #17314f !important;
+        print-color-adjust: exact
+      }
+
+      .card {
+        box-shadow: none;
+        break-inside: avoid
+      }
+
+      details {
+        break-inside: avoid
+      }
+
+      a {
+        color: inherit
+      }
+    }
+
+    .issue {
+      border-left: 4px solid var(--accent);
+      background: var(--soft);
+      padding: 14px 18px;
+      margin: 14px 0;
+    }
+
+    .label {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Selbstlernkurs · Python · Teamarbeit</div>
+      <h1>ShopCore<br>Ein praxisnaher Kurs zum Testen mit pytest</h1>
+      <p>Werde Teil eines kleinen E-Commerce-Entwicklungsteams. Lerne, Softwareverhalten klar zu definieren, Fehler zu
+        finden, sicher zu refaktorieren und mit automatisierten Tests Vertrauen aufzubauen – eine realistische Funktion
+        nach der anderen.</p>
+      <div class="hero-meta">
+        <span>Einsteigerfreundlich, Schritt für Schritt</span><span>Mit eigener Codebasis</span><span>Partnerarbeit und
+          gemeinsame Diskussionen</span><span>uv + pytest</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav aria-label="Kursübersicht">
+      <strong>Kursübersicht</strong>
+      <div class="navlinks">
+        <a href="#welcome">Willkommen und Szenario</a>
+        <a href="#setup">0 · Projekt einrichten</a>
+        <a href="#starting">Ausgangscode</a>
+        <a href="#chapter1">1 · Manuelle Prüfungen</a>
+        <a href="#chapter2">2 · Der erste pytest-Test</a>
+        <a href="#chapter3">3 · Grenzfälle und Fehler</a>
+        <a href="#chapter4">4 · Ausnahmen</a>
+        <a href="#chapter5">5 · Refactoring mit Dataclasses</a>
+        <a href="#chapter6">6 · Parametrisierung</a>
+        <a href="#chapter7">7 · Rabatte</a>
+        <a href="#chapter8">8 · Versandkosten</a>
+        <a href="#chapter9">9 · Fixtures und Integration</a>
+        <a href="#chapter10">10 · Bestellablauf (optional)</a>
+        <a href="#chapter11">11 · Regressionstests</a>
+        <a href="#chapter12">12 · Kontinuierliche Integration</a>
+        <a href="#final-project">Abschlussaufgabe</a>
+        <a href="#reference">Kurzreferenz</a>
+        <a href="#chapter13">13 · Abschlusstest</a>
+      </div>
+    </nav>
+
+    <main>
+      <section id="welcome">
+        <h2>Willkommen bei ShopCore</h2>
+        <p class="lead">Du kommst zu einem fiktiven Unternehmen, das Produkte online verkauft. Das Unternehmen hat ein
+          kleines Python-Backend. Das Team möchte Änderungen besser absichern, bevor neue Funktionen die Kundschaft
+          erreichen.</p>
+        <div class="story"><strong>Die Geschichte des Unternehmens</strong><br>
+          ShopCore wächst. Entwicklerinnen und Entwickler können die Anwendung starten und einige Beispiele manuell
+          ausprobieren. Es gibt jedoch keine zuverlässige Möglichkeit zu prüfen, ob das bisherige Verhalten nach einer
+          Änderung noch funktioniert. Ein Fehler bei der Warenkorbsumme oder der Bestandsprüfung könnte dazu führen,
+          dass jemand falsch belastet oder eine nicht erfüllbare Bestellung angenommen wird.</div>
+        <h3>Deine Rolle</h3>
+        Du entwickelst im ShopCore-Team. Deine Aufgabe ist nicht nur, eine angeforderte Funktion einmal zum Laufen zu
+        bringen. Du machst das erwartete Verhalten verständlich und prüfst es automatisiert, damit das Team die Software
+        weiterhin mit Vertrauen ändern kann.
+        <div class="grid2">
+          <div class="card">
+            <h3>Danach kannst du …</h3>
+            <ul>
+              <li>Erklären, warum automatisierte Tests nützlich sind.</li>
+              <li>pytest-Tests schreiben und ausführen.</li>
+              <li>Normale, grenzwertige und ungültige Fälle auswählen.</li>
+              <li>Prüfen, ob der Code erwartete Ausnahmen auslöst.</li>
+              <li>Datenstrukturen refaktorieren und dabei das Verhalten erhalten.</li>
+              <li>Parametrisierung und Fixtures sinnvoll einsetzen.</li>
+              <li>Regressionstests und einen einfachen CI-Ablauf erklären.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>So arbeitest du</h3>
+            <ul>
+              <li>Führe ein eigenes Repository und committe regelmäßig deinen Fortschritt.</li>
+              <li>Arbeite allein oder bilde ein Zweierteam zum Besprechen und Überprüfen.</li>
+              <li>Übersetze Anforderungen vor dem Programmieren in Beispiele.</li>
+              <li>Lies bei einem fehlgeschlagenen Test zuerst die Fehlermeldung, bevor du den Code änderst.</li>
+              <li>Vergleicht in gemeinsamen Diskussionen eure Entscheidungen, nicht nur eure Antworten.</li>
+            </ul>
+          </div>
+        </div>
+        <p class="small">Das Tempo ist bewusst flexibel. Jedes Kapitel ist eine Lerneinheit, kein Wettrennen. Schließe
+          den Kontrollpunkt ab, bevor du weitermachst.</p>
+      </section>
+
+      <section id="setup" class="chapter">
+        <div class="chapter-head">
+          <div class="num">0</div>
+          <div>
+            <h2>Bereite dein Projekt vor</h2>
+          </div>
+        </div>
+
+        <p>Der aktuelle Quellcode für Shopcore ist in folgendem <a
+            href="https://github.com/rdf-mal/shopcore">GitHub-Repository</a> enthalten. </p>
+        <h3>Voraussetzungen</h3>
+        <p> Damit du das Projekt erfolgreich starten und entwickeln kannst, benötigst du folgende Dinge:</p>
+        <ul>
+          <li><a href="https://www.python.org/downloads/">Python</a> 3.13 oder neuer</li>
+          <li><a href="https://docs.astral.sh/uv/">uv</a> installiert</li>
+          <li><a href="https://git-scm.com/">Git</a> installiert</li>
+          <li><a href="https://code.visualstudio.com/">VS Code</a> oder ein anderer Editor installiert</li>
+        </ul>
+        <h3>Projekt klonen</h3>
+        <pre><code>git clone https://github.com/rdf-mal/shopcore.git
+cd shopcore
+</code></pre>
+        <p>Die Projektstruktur sieht folgendermaßen aus:</p>
+        <pre><code>shopcore/
+├── pyproject.toml
+├── uv.lock
+├── README.md
+├── .gitignore
+└── src/shopcore/
+    ├── __init__.py
+    ├── pricing.py
+    ├── shipping.py
+    └── main.py 
+</code></pre>
+
+        <h3>Virtuelle Umgebung und Abhängigkeiten</h3>
+        <p>Das Project wird mit <code>uv</code> verwaltet. Zum erstellen der virtuellen Umgebung und installieren der
+          Abhängigkeiten führe den folgenden Befehl aus.
+        </p>
+        <pre><code>uv sync</code></pre>
+        <p>Weitere Informationen zum Projekt findest du in der <code>README.md</code>.</p>
+        <div class="callout"><strong>Kontrollpunkt 0</strong><br>Führe <code>uv run python --version</code> und
+          <code>uv run shopcore</code> aus. Prüfe, ob du eine Ausgabe erhälst.
+        </div>
+      </section>
+
+      <section id="starting">
+        <h2>Ausgangscode</h2>
+        <p>Öffne die Datei <code>src/shopcore/pricing.py</code>. Dies ist der vom ShopCore-Team bereitgestellte
+          Ausgangscode. Verbessere ihn noch nicht – zuerst untersuchen wir sein Verhalten.</p>
+        <pre><code># shopcore/pricing.py
+
+def calculate_total(items: list) -> float:
+    total = 0
+
+    for item in items:
+        total += item.get("price") * item.get("quantity")
+
+    return total</code></pre>
+        <p>Füge folgenden Code in die Datei <code>src/shopcore/main.py</code> ein:
+        </p>
+        <pre><code>from shopcore.pricing import calculate_total
+
+
+def test_calculate_total():
+    print("Testing calculate_total function ...")
+    cart = [
+        {"price": 10, "quantity": 2},
+        {"price": 5, "quantity": 3},
+    ]
+
+    total = calculate_total(cart)
+    print(f"Total price: {total}")</code></pre>
+        <div class="warning"><strong>Wichtig:</strong> Die erste Implementierung ist absichtlich klein und
+          unvollständig. Sie ist kein Vorbild für perfekten Produktivcode. Betrachte sie als vorhandenen Code, den dein
+          Team übernommen hat.</div>
+
+        <p>Rufe die Funktion <code>test_calculate_total()</code> in der <code>run</code>-Funktion auf.
+          Führe anschließend das Programm aus:</p>
+        <pre><code>uv run shopcore</code></pre>
+        <p>Du solltest die Ausgabe <code>Total price: 35</code> sehen.</p>
+      </section>
+
+      <section id="chapter1" class="chapter">
+        <div class="chapter-head">
+          <div class="num">1</div>
+          <div>
+            <h2>Manuelle Prüfungen: Was bedeutet „funktioniert“?</h2>
+            <div class="sub">Ziel: Erkenne die Grenzen, wenn du nur wenige Beispiele von Hand prüfst.</div>
+          </div>
+        </div>
+        <div>
+
+          <p>
+            In unserem ersten Test haben wir die Eingabe
+            <code>[{"price": 10, "quantity": 2}, {"price": 5, "quantity": 3}]</code> ausprobiert und das Ergebnis
+            <code>35</code> erhalten. <strong>Wir könnten nun die Funktion als „funktioniert“ erklären.</strong>
+          </p>
+          <p>
+            Wir haben jedoch noch nicht geprüft, ob die Funktion auch für andere Eingaben
+            korrekt arbeitet. Wir müssen das Verhalten der Funktion genauer untersuchen.
+          </p>
+          <p>Dazu schauen wir uns die folgende User Story mit unseren Geschäftsanforderungen an:</p>
+        </div>
+        <div class="story">
+          <strong>Issue #42: <span class="label">Feature Request</span> </strong>
+          <h3>Warenkorbsumme</h3>
+          <p>„Als Kundin oder Kunde möchte ich den Gesamtpreis meines Warenkorbs sehen, damit ich weiß, wie viel ich
+            bezahlen muss.“</p>
+          <h4>Akzeptanzkriterien / Geschäftsregeln (Version 1)</h4>
+          <ul>
+            <li>Jeder Warenkorbartikel hat einen Preis und eine Menge.</li>
+            <li>Die Warenkorbsumme ergibt sich aus der Summe von Preis mal Menge für alle Artikel.</li>
+            <li>Ein leerer Warenkorb kostet 0.</li>
+          </ul>
+        </div>
+        <h3>Aufgabe 1A · Untersuche die Funktion</h3>
+        Probiere diese Eingaben von Hand aus. Notiere das tatsächliche Ergebnis und was deiner Meinung nach das
+        erwartete Ergebnis sein sollte.
+        <table>
+          <thead>
+            <tr>
+              <th>Eingabeidee</th>
+              <th>Erwartetes Ergebnis</th>
+              <th>Was ist zu untersuchen?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ein Artikel: 10 € × 2</td>
+              <td>20</td>
+              <td>Einfache Berechnung</td>
+            </tr>
+            <tr>
+              <td>Drei verschiedene Artikel</td>
+              <td>Summe der Zwischensummen</td>
+              <td>Verhalten der Schleife</td>
+            </tr>
+            <tr>
+              <td>Leerer Warenkorb: <code>[]</code></td>
+              <td>0</td>
+              <td>Funktioniert die Schleife auch ohne Artikel?</td>
+            </tr>
+            <tr>
+              <td>Artikel mit Menge 0</td>
+              <td>Für diesen Artikel 0</td>
+              <td>Grenzwert</td>
+            </tr>
+            <tr>
+              <td>Negative Menge</td>
+              <td>Noch nicht festgelegt</td>
+              <td>Klärung der Geschäftsregel erforderlich</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>👥💬 Austausch zu zweit</h3>
+        <ul>
+          <li>Können wir die Funktion für korrekt erklären, nur weil das Beispiel 35 ergab?</li>
+          <li>Wie viele mögliche Warenkörbe gibt es?</li>
+          <li>Was könnte passieren, wenn nächste Woche jemand die Berechnung ändert?</li>
+          <li>Welches Verhalten muss mit der Produktverantwortung geklärt werden?</li>
+        </ul>
+        <div class="callout"><strong>Kontrollpunkt 1</strong><br>
+          <ul>
+            <li>
+              Erstelle eine kurze Liste der Verhaltensweisen, die geprüft werden müssen.
+            </li>
+            <li>
+              Finde mindestens einen Fall, in dem die Anforderung unklar ist.
+            </li>
+          </ul>
+        </div>
+        <details>
+          <summary>Impuls für die gemeinsame Diskussion</summary>
+          <p>Testen beginnt nicht mit einem Werkzeug, sondern mit der Entscheidung, was die Software tun soll. In einem
+            echten Team müssen Geschäftsregeln und das Verhalten bei Grenzfällen möglicherweise vor der Implementierung
+            geklärt werden.</p>
+        </details>
+      </section>
+
+      <section id="chapter2" class="chapter">
+        <div class="chapter-head">
+          <div class="num">2</div>
+          <div>
+            <h2>Dein erster automatisierter Test</h2>
+            <div class="sub">Ziel: Verstehe den Aufbau eines Tests und führe ihn mit pytest aus.</div>
+          </div>
+        </div>
+        <h3>Was ist ein automatisierter Test?</h3>
+        <p>Ein automatisierter Test führt Code mit einer bekannten Eingabe aus und prüft, ob das beobachtete Ergebnis
+          dem erwarteten entspricht. Er lässt sich wiederholt, schnell und zuverlässig ausführen. Ein Test ist
+          ausführbare Dokumentation eines Verhaltens, das dem Team wichtig ist.</p>
+        <p>Es gibt verschiedene Frameworks zum Testen, z.B. pytest, unittest und nose. Alle haben ihre Vor- und
+          Nachteile. Wir werden pytest verwenden. Pytest ist ein weit verbreitetes und beliebtes Framework, ist einfach
+          zu bedienen und
+          bietet trotzdem viele Features zum Testen von Python-Code. </p>
+
+        <h3>Pytest hinzufügen</h3>
+
+        <p>Füge pytest als Entwicklungsabhängigkeit hinzu:</p>
+        <pre><code>uv add --dev pytest</code></pre>
+        <p>Führe pytest aus, um zu prüfen, ob es korrekt installiert ist:</p>
+        <pre><code>uv run pytest --version</code></pre>
+        <p>Du solltest eine Ausgabe ähnlich wie diese sehen:
+          <code>pytest 7.4.0</code>
+          Die Versionsnummer kann abweichen.
+        </p>
+        Um pytest auszuführen, verwende den Befehl:
+        <pre><code>uv run pytest</code></pre>
+        Pytest sucht automatisch nach Testdateien und Testfunktionen. Standardmäßig heißen Testdateien
+        <code>test_*.py</code> oder <code>*_test.py</code>.
+        Testfunktionen müssen mit <code>test_</code> beginnen.
+
+        Da wir noch keine Testdateien haben, wird pytest keine Tests finden. Du solltest eine Ausgabe ähnlich wie diese
+        sehen:
+        <pre><code>============================= test session starts ==============================
+...
+collected 0 items
+============================== no tests ran in 0.00s ==============================</code></pre>
+        <p>Wenn keine Tests gefunden werden, beendet sich pytest mit Exit-Code 5. Das ist hier zu erwarten.</p>
+
+
+        <h3>Ordner für Tests anlegen</h3>
+        <p>Erstelle einen neuen Ordner <code>tests</code> im Projektstammverzeichnis. Darin werden wir unsere Tests
+          ablegen.</p>
+        <p>
+          <strong>Hinweis:</strong> Lege Testdateien beispielsweise als <code>test_pricing.py</code> an.
+        </p>
+
+        <h3>Aufgabe 2A · Schreibe einen Test</h3>
+        Lege <code>tests/test_pricing.py</code> mit folgendem Inhalt an:
+        <pre><code>from shopcore.pricing import calculate_total
+
+
+def test_calculate_total():
+    items = [
+        {"price": 10, "quantity": 2},
+        {"price": 5, "quantity": 3},
+    ]
+
+    result = calculate_total(items)
+
+    assert result == 35</code></pre>
+
+        <p>
+          <span class="small">Hinweis: Entferne aus <code>main.py</code> sowohl die manuelle Funktion
+            <code>test_calculate_total</code> als auch ihren Aufruf in <code>run()</code>.</span>
+        </p>
+
+        Um den Test auszuführen, verwende den Befehl:
+        <pre><code>uv run pytest</code></pre>
+        <p>Die Ausgabe sollte zeigen, dass der Test erfolgreich ist.</p>
+        <pre><code>================================================================ test session starts ================================================================
+...
+collected 1 item                                                                                                                                    
+
+tests/test_pricing.py .                                                                                                                       [100%]
+
+================================================================= 1 passed in 0.02s =================================================================
+</code></pre>
+
+
+        <div class="callout"><strong>👍 Super </strong><br>
+          Du hast deinen ersten Test mit <code>pytest</code> geschrieben und erfolgreich ausgeführt.
+        </div>
+
+        <p>
+          Aber lass uns nochmal anschauen was wir gerade gemacht haben. Wir haben die Eingabedaten vorbereitet, die
+          Funktion aufgerufen und das Ergebnis überprüft. Das ist das Arrange-Act-Assert-Muster, das wir in den
+          nächsten Kapiteln noch öfter verwenden werden.
+        </p>
+
+
+        <h3>Verstehe Arrange · Act · Assert</h3>
+        <div class="grid2">
+          <div class="card">
+            <h4>Vorbereiten (Arrange)</h4>
+            <p>Bereite die Eingabedaten vor. Hier ist die Liste der Warenkorbartikel die Testvorbereitung.</p>
+          </div>
+          <div class="card">
+            <h4>Ausführen (Act)</h4>
+            <p>Rufe die zu testende Funktion auf: <code>calculate_total(items)</code>.</p>
+          </div>
+          <div class="card">
+            <h4>Prüfen (Assert)</h4>
+            <p>Prüfe das Ergebnis: <code>assert result == 35</code>.</p>
+          </div>
+          <div class="card">
+            <h4>Beobachten</h4>
+            <p>pytest meldet mit hilfreichem Kontext, ob die Prüfung bestanden wurde oder fehlgeschlagen ist.</p>
+          </div>
+        </div>
+        <h3>Aufgabe 2B · Bringe den Test absichtlich zum Fehlschlagen</h3>
+        Ändere den erwarteten Wert vorübergehend in <code>34</code>. Führe pytest aus und lies die Fehlermeldung.
+        Setze
+        den Wert anschließend wieder auf <code>35</code>.
+        <ul>
+          <li>Was hat dir pytest mitgeteilt?</li>
+          <li>Warum ist das hilfreicher als eine print-Anweisung?</li>
+          <li>Warum ist ein fehlgeschlagener Test nicht zwangsläufig ein fehlerhafter Test?</li>
+        </ul>
+        <div class="callout"><strong>Kontrollpunkt 2</strong>
+          <ul>
+            <li>
+
+              Du hast einen Test geschrieben, der die Funktion <code>calculate_total</code> prüft.
+            </li>
+            <li>
+              Du kannst das Arrange–Act–Assert-Muster erklären und eine einfache pytest-Fehlermeldung lesen.
+            </li>
+          </ul>
+        </div>
+        <details>
+          <summary>Impuls für die gemeinsame Diskussion</summary>
+          <p>Besprecht den Unterschied zwischen „das Programm hat etwas Plausibles ausgegeben“ und „das Programm hat
+            eine Erwartung geprüft“. Führt den Gedanken ein, dass ein Test nur für das Verhalten bestehen kann, das er
+            tatsächlich prüft.</p>
+        </details>
+      </section>
+
+      <section id="chapter3" class="chapter">
+        <div class="chapter-head">
+          <div class="num">3</div>
+          <div>
+            <h2>Grenzfälle und einen Fehler finden</h2>
+            <div class="sub">Ziel: Erweitere Tests über den Erfolgsfall hinaus.</div>
+          </div>
+        </div>
+        <div class="story"><strong>Präzisierung durch die Produktverantwortung</strong><br>„Ein leerer Warenkorb hat
+          die Summe 0. Ein Warenkorbartikel mit negativem Preis oder negativer Menge ist ungültig. Ungültige Artikel
+          sollen abgewiesen werden, statt eine unsinnige Summe zu berechnen.“</div>
+        <h3>Ideen zum Testen</h3>
+        <p>Eine nützliche Testsuite umfasst verschiedene Eingabekategorien. Ein „Grenzfall“ liegt nahe an einem
+          Grenzwert oder beschreibt eine ungewöhnliche, aber relevante Situation – nicht einfach einen extremen
+          Zufallswert.</p>
+        <ul>
+          <li><strong>Erfolgsfall:</strong> gewöhnliche, gültige Daten.</li>
+          <li><strong>Grenzfall:</strong> leerer Warenkorb, Menge 0.</li>
+          <li><strong>Ungültige Eingabe:</strong> negativer Preis oder negative Menge.</li>
+          <li><strong>Mehrere Artikel:</strong> sicherstellen, dass alle Zwischensummen berücksichtigt werden.</li>
+        </ul>
+        <h3>Aufgabe 3A · Ergänze Tests für das vereinbarte Verhalten</h3>
+        Ergänze einen Test für den leeren Warenkorb:
+        <pre><code>def test_empty_cart():
+    assert calculate_total([]) == 0</code></pre>
+        Plane außerdem Tests für negative Preise und negative Mengen. Notiere zunächst, welches Verhalten du erwartest.
+        Im nächsten Kapitel schreiben wir die Tests für die Zurückweisung.
+        <h3>Aufgabe 3B · Finde den Fehler</h3>
+        Führe die aktuelle Funktion mit dieser Eingabe aus:
+        <pre><code>[{"price": 10, "quantity": -2}]</code></pre>
+        Sie liefert <code>-20</code>. Laut Produktverantwortung müssen ungültige Daten zurückgewiesen werden. Die
+        Implementierung erfüllt die präzisierte Anforderung also nicht.
+        <ul>
+          <li>Beschreibe den Fehler in einem Satz.</li>
+          <li>Welche Testeingabe macht ihn sichtbar?</li>
+          <li>Würdest du die Anforderung oder den Code ändern? Warum?</li>
+        </ul>
+        <div class="callout"><strong>Kontrollpunkt 3</strong><br>Dein kurzer Testplan umfasst normale, leere,
+          grenzwertige und ungültige Eingaben. Du kannst erklären, gegen welche Anforderung der aktuelle Code verstößt.
+        </div>
+        <details>
+          <summary>Impuls für die gemeinsame Diskussion</summary>
+          <p>Vergleicht eure Testideen zu zweit. Welche Fälle unterscheiden sich wirklich? Was ist redundant? Welche
+            erwarteten Ergebnisse ergeben sich aus der Geschäftsanforderung und welche beruhen auf persönlichen
+            Annahmen?</p>
+        </details>
+      </section>
+
+      <section id="chapter4" class="chapter">
+        <div class="chapter-head">
+          <div class="num">4</div>
+          <div>
+            <h2>Fehler und Ausnahmen testen</h2>
+            <div class="sub">Ziel: Prüfe, ob ungültige Vorgänge wie vorgesehen abgewiesen werden.</div>
+          </div>
+        </div>
+        <h3>Konzept: Fehler können erwartetes Verhalten sein</h3>
+        <p>Bei ungültigen Eingaben kann eine Funktion eine Ausnahme auslösen, statt eine Zahl zurückzugeben. Pythons
+          <code>ValueError</code> signalisiert passend, dass ein Wert ungeeignet ist. Ein Test sollte prüfen, ob die
+          Ausnahme wie erwartet auftritt.
+        </p>
+        <h3>Aufgabe 4A · Teste die Ausnahme</h3>
+        Ergänze diesen Test für eine negative Menge:
+        <pre><code>import pytest
+
+
+def test_negative_quantity_is_rejected():
+    items = [{"price": 10, "quantity": -2}]
+
+    with pytest.raises(ValueError):
+        calculate_total(items)</code></pre>
+        Ergänze einen ähnlichen Test für einen negativen Preis. Führe pytest aus. Die neuen Tests sollten fehlschlagen,
+        bis die Implementierung diese Werte zurückweist.
+        <h3>Aufgabe 4B · Setze die Anforderung um</h3>
+        Ändere <code>calculate_total()</code> so, dass bei einem negativen Preis oder einer negativen Menge
+        <code>ValueError</code> ausgelöst wird. Das Verhalten für einen leeren Warenkorb bleibt erhalten.
+        <div class="warning"><strong>Entscheidung zum Entwurf:</strong> Laut Kursanforderung sind negative Werte
+          ungültig. Ob fehlende Schlüssel, Zeichenketten, boolesche Werte oder andere Typen behandelt werden müssen, ist
+          noch nicht festgelegt. Erfinde nicht stillschweigend ein umfassendes Validierungsframework. Halte offene
+          Fragen fest.</div>
+        <h3>Nachdenken und besprechen</h3>
+        <ul>
+          <li>Warum ist <code>pytest.raises()</code> besser, als im Test jede beliebige Ausnahme abzufangen?</li>
+          <li>Was wäre, wenn die Funktion statt <code>ValueError</code> ein <code>TypeError</code> auslöste?</li>
+          <li>Sollte ein Test die Ausnahmemeldung prüfen? Wann wäre die Meldung Teil des Vertrags?</li>
+        </ul>
+        <div class="callout"><strong>Kontrollpunkt 4</strong><br>Alle Tests bestehen. Ungültige negative Werte lösen
+          <code>ValueError</code> aus, und ein leerer Warenkorb ergibt 0.
+        </div>
+      </section>
+
+      <section id="chapter5" class="chapter">
+        <div class="chapter-head">
+          <div class="num">5</div>
+          <div>
+            <h2>Wandle Dictionaries in eine Dataclass um</h2>
+            <div class="sub">Ziel: Ändere die interne Darstellung, ohne das Geschäftsverhalten zu verändern.</div>
+          </div>
+        </div>
+        <div class="story"><strong>Refactoring-Auftrag #12 · Warenkorbartikel explizit darstellen</strong>
+          <p>
+            Der Preiscode hängt derzeit von Dictionary-Schlüsseln ab. Ein eigener Typ kann die erwartete Struktur
+            der Warenkorbartikel deutlicher machen.
+          </p>
+          <p>
+            Wir möchten einen klaren Python-Typ, der einen Warenkorbartikel darstellt. Stelle auf eine Dataclass um,
+            ohne das Verhalten der Preisberechnung zu ändern.
+          </p>
+        </div>
+        <h3>Konzept: Refactoring</h3>
+        <p>Beim Refactoring wird die interne Struktur des Codes geändert, ohne sein von außen beobachtbares Verhalten
+          zu verändern. Tests liefern Hinweise darauf, dass das Verhalten gleich bleibt. Wenn sich die Darstellung der
+          Eingaben ändert, muss möglicherweise die Testvorbereitung angepasst werden; die fachlichen Erwartungen sollten
+          stabil bleiben.</p>
+        <h3>Aufgabe 5A · Erstelle die Dataclass</h3>
+        Erstelle <code>src/shopcore/models.py</code>:
+        <pre><code>from dataclasses import dataclass
+
+
+@dataclass
+class CartItem:
+    price: float
+    quantity: int</code></pre>
+        <p>Die Typannotationen dokumentieren die erwarteten Typen, validieren sie aber nicht automatisch zur Laufzeit.
+          Die bereits vereinbarte Prüfung negativer Werte bleibt weiterhin notwendig.</p>
+        <h3>Aufgabe 5B · Refaktoriere die Tests</h3>
+        Ändere die Testdaten von Dictionaries <code>items = [{"price": 10, "quantity": -2}]</code> zu der neuen
+        Dataclass-Instanz
+        <code>items = [CartItem(price=10, quantity=-2)]</code>. Behalte die erwarteten Summen und
+        Ausnahmen bei.
+        <h3>Aufgabe 5C · Refaktoriere die Funktion</h3>
+        Ändere <code>calculate_total()</code>, sodass die Funktion statt Dictionary-Schlüsseln die Attribute der
+        Dataclass ausliest. Verbessere die Typannotation zu
+        <code>list[CartItem]</code> um Sie klarer zu machen.
+        <h3>Aufgabe 5D · Tests erneut ausführen</h3>
+        <p>Führe die Tests erneut aus, um sicherzustellen, dass alles wie erwartet funktioniert.</p>
+
+
+        <h3>Gemeinsame Überprüfung</h3>
+        <ul>
+          <li>Welche Zeilen im Anwendungscode haben sich geändert?</li>
+          <li>Welche Zeilen in den Tests haben sich geändert?</li>
+          <li>Welche Prüfungen sind gleich geblieben?</li>
+          <li>Wie machen die Dataclass-Attribute die Datenstruktur verständlicher?</li>
+          <li>Hat das Refactoring versehentlich ein Verhalten geändert?</li>
+        </ul>
+        <div class="callout"><strong>Kontrollpunkt 5</strong><br>Die Testsuite besteht nach dem Refactoring. Du kannst
+          erklären, warum sich die Testvorbereitung geändert hat, die Verhaltenserwartungen aber nicht.</div>
+        <details>
+          <summary>gemeinsame Diskussion</summary>
+          <p>Macht den Unterschied deutlich: Tests müssen nach einem strukturellen Refactoring nicht textlich identisch
+            bleiben. Sie sollten weiterhin dasselbe öffentliche Verhalten prüfen. Vermeidet Tests, die von irrelevanten
+            Implementierungsdetails abhängen.</p>
+        </details>
+      </section>
+
+      <section id="chapter6" class="chapter">
+        <div class="chapter-head">
+          <div class="num">6</div>
+          <div>
+            <h2>Ähnliche Tests parametrisieren</h2>
+            <div class="sub">Ziel: Prüfe verschiedene Beispiele, ohne denselben Testkörper zu wiederholen.</div>
+          </div>
+        </div>
+        <h3>Konzept: Parametrisierung</h3>
+        <p>Wenn dieselbe Regel für mehrere Eingaben gelten soll, kann pytest eine Testfunktion mit verschiedenen
+          Parametersätzen ausführen. So bleibt die Absicht des Tests sichtbar und Wiederholungen werden reduziert.</p>
+        <h3>Aufgabe 6A · Prüfe Artikelsummen mit mehreren Beispielen</h3>
+        Beginne mit einem parametrisierten Test. Dieses Beispiel prüft die ShopCore-Funktion mit verschiedenen
+        Artikeln.
+        <pre><code>import pytest
+      from shopcore.models import CartItem
+      from shopcore.pricing import calculate_total
+
+
+@pytest.mark.parametrize(
+    "price, quantity, expected",
+    [
+        (10, 2, 20),
+        (5, 3, 15),
+        (0, 10, 0),
+        (2.5, 4, 10),
+    ],
+)
+def test_item_subtotal(price, quantity, expected):
+  assert calculate_total([CartItem(price=price, quantity=quantity)]) == expected</code></pre>
+
+        <p class="small">Wie viele Testfälle führt pytest für diese eine Testfunktion aus?</p>
+
+        <h3>Aufgabe 6B · Parametrisiere das Warenkorbverhalten</h3>
+        Erstelle einen parametrisierten Test <code>test_valid_carts</code> für mehrere gültige Warenkörbe und die
+        erwarteten Summen. Verwende die nach
+        dem Refactoring eingeführten Dataclass-Instanzen. Halte Tests für ungültige Eingaben lesbar; parametrisiere sie
+        nur, wenn ihre Struktur tatsächlich gleich ist.
+
+        <h3>Rückblick</h3>
+        <ul>
+          <li>Welche Wiederholungen hat die Parametrisierung beseitigt?</li>
+          <li>Wann würden einzelne Testfunktionen die Absicht klarer vermitteln?</li>
+          <li>Wie kennzeichnet pytest die einzelnen Parameterfälle in der Ausgabe?</li>
+        </ul>
+        <div class="callout"><strong>Kontrollpunkt 6</strong><br>Du kannst mit <code>@pytest.mark.parametrize</code>
+          mehrere Beispiele testen und dabei die erwarteten Werte explizit angeben.</div>
+      </section>
+
+      <section id="chapter7" class="chapter">
+        <div class="chapter-head">
+          <div class="num">7</div>
+          <div>
+            <h2>Funktionswunsch: Rabattcodes</h2>
+            <div class="sub">Ziel: Wende den Testablauf auf eine neue Funktion an.</div>
+          </div>
+        </div>
+        <div class="story">
+          <strong>Issue #43: <span class="label">Feature Request</span></strong>
+          <h3>Aktionsrabatt</h3>
+          <p>„Kundinnen und Kunden können den Code SAVE10 eingeben und erhalten 10 % Rabatt auf ihren Warenkorb. Bei
+            Codes wird nicht zwischen Groß- und Kleinschreibung unterschieden. Unbekannte Codes ändern die Summe nicht.“
+          </p>
+          <h4>Akzeptanzkriterien / Geschäftsregeln</h4>
+          <ul>
+            <li><code>SAVE10</code> verringert die Summe um 10 %.</li>
+            <li><code>save10</code> und andere Schreibweisen verhalten sich gleich.</li>
+            <li>Ein unbekannter Code lässt die Summe unverändert.</li>
+            <li>Eine Summe von 0 bleibt 0. Eine negative Summe wird mit <code>ValueError</code> abgewiesen.</li>
+          </ul>
+        </div>
+        <h3>Aufgabe 7A · Plane Tests vor der Implementierung</h3>
+        Notiere für jedes Abnahmekriterium eine Eingabe und das erwartete Ergebnis. Zum Beispiel ergibt
+        <code>apply_discount(100, "SAVE10")</code> den Wert 90.
+
+        <p>
+          Beim Test-Driven Development (TDD) schreiben wir Tests vor der Implementierung. Ein fehlgeschlagener Test
+          zeigt zunächst, welches Verhalten noch fehlt. Danach implementieren wir die Funktion und führen die Tests
+          erneut aus.
+        </p>
+        <p>
+          Lege zunächst <code>src/shopcore/discounts.py</code> mit der folgenden Funktionssignatur an, damit der
+          Import funktioniert. Schreibe dann die Tests in <code>tests/test_discounts.py</code> und führe sie aus.
+        </p>
+
+        <pre><code>def apply_discount(total, code):
+      raise NotImplementedError</code></pre>
+        <p>Importiere <code>pytest</code> sowie <code>apply_discount</code> aus <code>shopcore.discounts</code>.
+          Für Ergebnisse mit Dezimalstellen kannst du <code>pytest.approx</code> verwenden, da
+          <code>float</code>-Berechnungen kleine
+          Ungenauigkeiten enthalten können, zum Beispiel
+          <code>assert apply_discount(35, "SAVE10") == pytest.approx(31.50)</code>.
+        </p>
+        <h3>Aufgabe 7B · Implementiere die Funktion</h3>
+        Ersetze den Platzhalter durch deine Implementierung und führe alle Tests erneut aus.
+        <h3>Aufgabe 7C · Überprüfe das Ergebnis</h3>
+        <ul>
+          <li>Welcher Test hat während der Entwicklung den wichtigsten Fehler aufgedeckt?</li>
+          <li>Testest du jede Codezeile oder die Anforderungen?</li>
+          <li>Erklärt die Testsuite die Funktion für andere Entwicklerinnen und Entwickler?</li>
+        </ul>
+        <div class="callout"><strong>Kontrollpunkt 7</strong><br>Das Rabattverhalten ist durch Tests abgedeckt, alle
+          Tests bestehen und deine Implementierung erfüllt die Abnahmekriterien.</div>
+      </section>
+
+      <section id="chapter8" class="chapter">
+        <div class="chapter-head">
+          <div class="num">8</div>
+          <div>
+            <h2>Funktionswunsch: Versandkosten</h2>
+            <div class="sub">Ziel: Leite Tests aus Geschäftsregeln und ihren Grenzen ab.</div>
+          </div>
+        </div>
+        <div class="story">
+          <strong><span class="label">Feature Request</span></strong>
+          <h3>Versandkosten</h3>
+          <p>„Die Versandkosten hängen vom Warenwert nach einem möglichen Rabatt ab. Ab 50 € ist der Versand kostenlos.“
+          </p>
+          <h4>Akzeptanzkriterien / Geschäftsregeln</h4>
+          <ul>
+            <li>Bei einem Warenwert von 0 € fallen keine Versandkosten an.</li>
+            <li>Bei einem Warenwert über 0 € und unter 50 € betragen die Versandkosten 4,90 €.</li>
+            <li>Ab einem Warenwert von 50 € betragen die Versandkosten 0 €.</li>
+            <li>Ein negativer Warenwert wird mit <code>ValueError</code> abgewiesen.</li>
+          </ul>
+        </div>
+        <h3>Aufgabe 8A · Plane und schreibe Tests</h3>
+        <p>Verwende die vorhandene Funktion <code>calculate_shipping_costs(total_price)</code> aus
+          <code>src/shopcore/shipping.py</code>. Notiere Eingaben und erwartete Ergebnisse für jede Regel, insbesondere
+          für 0 €, 49,99 €, 50 € und einen Wert über 50 €. Ergänze einen negativen Wert.
+        </p>
+        <p>Schreibe die Tests in <code>tests/test_shipping.py</code> und führe sie aus, bevor du die Funktion änderst.
+          Die vorhandene Implementierung ist ein Platzhalter; einige Tests sollten fehlschlagen. Verwende bei passenden
+          Fällen eine Parametrisierung.</p>
+        <h3>Aufgabe 8B · Implementiere die Versandregeln</h3>
+        <p>Ersetze den Platzhalter in <code>calculate_shipping_costs()</code> durch die vereinbarten Regeln. Führe
+          anschließend die gesamte Testsuite aus.</p>
+        <h3>Aufgabe 8C · Prüfe die Grenze</h3>
+        <p>Warum sind die Werte knapp unter und genau bei 50 € besonders wichtig? Würden deine Tests einen Fehler
+          erkennen, bei dem kostenloser Versand erst für Werte über 50 € gilt?</p>
+        <div class="callout"><strong>Kontrollpunkt 8</strong><br>Die Versandregeln einschließlich Grenzwert und
+          negativer Eingabe sind getestet; alle Tests bestehen.</div>
+      </section>
+
+      <section id="chapter9" class="chapter">
+        <div class="chapter-head">
+          <div class="num">9</div>
+          <div>
+            <h2>Fixtures und ein einfacher Integrationstest</h2>
+            <div class="sub">Ziel: Teile sinnvolle Testvorbereitung und prüfe das Zusammenspiel der Funktionen.</div>
+          </div>
+        </div>
+        <h3>Konzept: Fixture</h3>
+        <p>Eine pytest-Fixture stellt einem Test Daten oder eine Testvorbereitung bereit. Ein Test fordert eine Fixture
+          über einen gleichnamigen Funktionsparameter an; pytest stellt sie bereit. Standardmäßig wird sie für jeden
+          Test neu erstellt. Fixtures sind hilfreich, wenn mehrere Tests dieselbe sinnvolle Vorbereitung benötigen.</p>
+        <h3>Aufgabe 9A · Erstelle eine Warenkorb-Fixture</h3>
+        <p>Lege <code>tests/test_checkout.py</code> an und ergänze dort:</p>
+        <pre><code>import pytest
+from shopcore.models import CartItem
+
+
+@pytest.fixture
+def sample_cart():
+    return [
+        CartItem(price=10, quantity=2),
+        CartItem(price=5, quantity=3),
+    ]</code></pre>
+        <h3>Aufgabe 9B · Kombiniere die Funktionen</h3>
+        <p>Erstelle in <code>src/shopcore/checkout.py</code> die Funktion
+          <code>calculate_checkout_total(items, code)</code>. Sie ruft zuerst <code>calculate_total(items)</code> auf,
+          wendet mit <code>apply_discount(total, code)</code> den Rabatt an und berechnet anschließend mit
+          <code>calculate_shipping_costs(total_price)</code> die Versandkosten für den rabattierten Warenwert.
+          Sie gibt rabattierten Warenwert plus Versandkosten zurück.
+        </p>
+        <p>Die Eingaben folgen den bisherigen Verträgen: <code>items</code> enthält <code>CartItem</code>-Objekte und
+          <code>code</code> ist eine Zeichenkette. Ungültige negative Artikelwerte werden wie bisher abgewiesen.
+        </p>
+        <h3>Aufgabe 9C · Teste das Zusammenspiel</h3>
+        <p>Importiere <code>calculate_checkout_total</code> in <code>tests/test_checkout.py</code> und verwende die
+          Fixture in mindestens zwei Tests:</p>
+        <pre><code>from shopcore.checkout import calculate_checkout_total
+
+
+def test_checkout_with_discount(sample_cart):
+    assert calculate_checkout_total(sample_cart, "SAVE10") == pytest.approx(36.40)</code></pre>
+        <p>Der Warenkorb kostet 35 €, nach dem Rabatt 31,50 €; hinzu kommen 4,90 € Versand. Prüfe für denselben
+          Warenkorb auch einen unbekannten Code: Das Ergebnis ist 39,90 €. Ergänze einen Test für einen Warenkorb mit
+          50 € vor Rabatt und <code>SAVE10</code>: Nach dem Rabatt fallen Versandkosten an, das Ergebnis ist 49,90 €.
+          Bei 60 € vor Rabatt und <code>SAVE10</code> beträgt das Ergebnis ohne Versandkosten 54 €. Prüfe außerdem
+          einen leeren Warenkorb und die Abweisung eines ungültigen Artikels.</p>
+        <p>Dezimalzahlen lassen sich mit <code>float</code> nicht immer exakt darstellen. <code>pytest.approx</code>
+          vergleicht Zahlen mit einer kleinen Toleranz. Für echte Geldbeträge wären zusätzlich eine geeignete
+          Darstellung und explizite Rundungsregeln nötig; sie sind nicht Teil dieser Übung.</p>
+        <div class="warning"><strong>Fixture oder Integration?</strong> Die Fixture bereitet nur den Warenkorb vor.
+          Ein Checkout-Test ist ein Integrationstest, weil der Checkout mehrere echte ShopCore-Funktionen zusammen
+          verwendet. Die Tests aus den vorherigen Kapiteln prüfen die einzelnen Funktionen gezielt.</div>
+        <h3>Austausch zu zweit</h3>
+        <ul>
+          <li>Warum muss der Rabatt vor der Berechnung der Versandkosten angewendet werden?</li>
+          <li>Welchen Fehler kann der Test mit 50 € vor Rabatt aufdecken?</li>
+          <li>Wo macht die Fixture die Tests lesbarer und wo sind direkt angegebene Daten verständlicher?</li>
+        </ul>
+        <div class="callout"><strong>Kontrollpunkt 9</strong><br>Du verwendest die Fixture in mehreren Tests und
+          kannst erklären, wie pytest sie bereitstellt. Die Checkout-Tests prüfen das Zusammenspiel der Funktionen;
+          alle Tests bestehen.</div>
+      </section>
+
+      <section id="chapter10" class="chapter">
+        <div class="chapter-head">
+          <div class="num">10</div>
+          <div>
+            <h2>Optionale Vertiefung: Bestellabwicklung</h2>
+            <div class="sub">Ziel: Führe getestete Funktionen in einem kleinen Ablauf zusammen und beschäftige dich
+              mit Integration.</div>
+          </div>
+        </div>
+        <div class="story">
+          <strong>Issue #44: <span class="label">Feature Request</span></strong>
+          <h3>Bestellung aufgeben</h3>
+          <p>„Kundinnen und Kunden können eine Bestellung aufgeben, wenn die angeforderten Mengen verfügbar sind. Der
+            Bestand darf nur sinken, wenn eine Bestellung angenommen wird. Bestellungen mit unzureichendem Bestand
+            müssen abgewiesen werden.“</p>
+          <h4>Akzeptanzkriterien / Geschäftsregeln</h4>
+          <ul>
+            <li>Ist der angeforderte Bestand verfügbar, wird die Bestellung angenommen und der Bestand sinkt um die
+              angeforderte Menge.</li>
+            <li>Übersteigt die angeforderte Menge den Bestand, wird die Bestellung abgewiesen und der Bestand bleibt
+              unverändert.</li>
+            <li>Eine angeforderte Menge von null oder weniger wird abgewiesen.</li>
+            <li>Ist bei einer Bestellung mit zwei Artikeln einer nicht verfügbar, wird die gesamte Bestellung
+              abgewiesen und alle Bestände bleiben unverändert.</li>
+          </ul>
+        </div>
+        <p>Diese anspruchsvollere Aufgabe ist optional. Du kannst direkt mit Kapitel 11 fortfahren. Für die
+          Implementierung darfst du KI-Unterstützung verwenden; lege die Testfälle und den Vertrag selbst fest, prüfe
+          den erzeugten Code und erkläre, was deine Tests nachweisen.</p>
+        <h3>Halte den Umfang klein</h3>
+        <p>Wir entwickeln weiterhin ein Python-Lernprojekt und keinen vollständigen Webdienst oder datenbankgestützten
+          Shop. Verwende einfache Daten im Arbeitsspeicher. Ziel ist es, das Zusammenspiel einiger Komponenten zu
+          testen.</p>
+        <h3>Vereinbart eine kleine Schnittstelle</h3>
+        <p>Legt im Team fest, welche Informationen eine Bestellung benötigt und was die Verarbeitungsfunktion
+          zurückgeben oder auslösen soll. Beispielsweise kann ein Dictionary den Bestand abbilden, indem es
+          Produktkennungen den jeweiligen Mengen zuordnet. Haltet den Vertrag vor der Implementierung fest.</p>
+        <h3>Aufgabe 10A · Erstelle eine Verhaltenstabelle</h3>
+        <p>Übertrage die Szenarien aus dem Funktionswunsch in eine eigene Tabelle und ergänze für jedes Szenario
+          konkrete Eingaben und erwartete Ergebnisse.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Szenario</th>
+              <th>Erwartetes Verhalten</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Der angeforderte Bestand ist verfügbar</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Die angeforderte Menge übersteigt den Bestand</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Die angeforderte Menge ist null oder negativ</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Zwei Artikel in einer Bestellung; einer ist nicht verfügbar</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Aufgabe 10B · Schreibe Tests und implementiere anschließend</h3>
+        Schreibe Tests für angenommene und abgewiesene Bestellungen. Prüfe sowohl den Rückgabewert beziehungsweise die
+        Ausnahme als auch den resultierenden Lagerbestand. Das Ergebnis umfasst mehr als einen einzelnen Rückgabewert.
+        <h3>Aufgabe 10C · Unit-Test oder Integrationstest?</h3>
+        <p>Vergleiche deine Bestelltests mit den Checkout-Tests. Ein Test ist insbesondere dann ein Integrationstest,
+          wenn er das Zusammenspiel mehrerer echter Komponenten prüft. Welche deiner Tests tun das?</p>
+        <div class="callout"><strong>Kontrollpunkt 10 · optional</strong><br>Du hast einen kleinen Bestellablauf mit
+          Tests für
+          angenommene und abgewiesene Bestellungen sowie Zustandsänderungen. Der fachliche Vertrag ist dokumentiert.
+        </div>
+        <details>
+          <summary>Impuls für die gemeinsame Diskussion</summary>
+          <p>Lasst die Gruppen ihre Bestellschnittstellen vergleichen. Es kann mehrere sinnvolle Lösungen geben.
+            Besprecht, ob das Verhalten klar, konsistent und testbar ist, statt eine bestimmte Architektur
+            vorzuschreiben.</p>
+        </details>
+      </section>
+
+      <section id="chapter11" class="chapter">
+        <div class="chapter-head">
+          <div class="num">11</div>
+          <div>
+            <h2>Regressionen erkennen und verhindern</h2>
+            <div class="sub">Ziel: Verstehe, wie bestehende Tests zuvor funktionierendes Verhalten absichern.</div>
+          </div>
+        </div>
+        <h3>Was ist eine Regression?</h3>
+        <p>Eine Regression entsteht, wenn eine Änderung ein Verhalten beschädigt, das vorher bereits funktioniert hat.
+          Die Änderung kann eigentlich eine andere Aufgabe betreffen, zum Beispiel eine neue Versandregel oder eine
+          Vereinfachung des Codes. Auch nach einer erfolgreichen Änderung müssen die bisherigen Regeln noch gelten.</p>
+        <div class="story"><strong>Beispiel aus ShopCore</strong><br>Der Versand ist ab 50 € kostenlos. Eine
+          Entwicklerin ändert die Versandberechnung. Danach ist der Versand erst <em>über</em> 50 € kostenlos. Für
+          60 € funktioniert die Berechnung weiterhin, aber bei genau 50 € werden plötzlich 4,90 € berechnet. Das ist
+          eine Regression: Eine vorher erfüllte Geschäftsregel wurde verletzt.</div>
+        <h3>Was prüft ein Regressionstest?</h3>
+        <p>Ein Regressionstest hält eine Erwartung fest und wird auch nach späteren Änderungen erneut ausgeführt.
+          Ein solcher Test kann vorbeugend für ein wichtiges Verhalten geschrieben werden oder nach einem gefundenen
+          Fehler dafür sorgen, dass dieser nicht unbemerkt zurückkehrt. Deine bisherigen Tests können also bereits als
+          Regressionstests dienen; dafür ist keine besondere pytest-Funktion nötig.</p>
+        <p>Eine Testsuite ist die Gesamtheit der Tests, die du ausführst. Bestehen alle Tests, weißt du, dass die
+          geprüften Erwartungen erfüllt sind. Das beweist aber nicht, dass alle denkbaren Fehler ausgeschlossen sind.
+        </p>
+        <h3>Aufgabe 11A · Sichere die Versandgrenze ab</h3>
+        <p>Führe zunächst die gesamte Testsuite mit <code>uv run pytest</code> aus. Alle Tests sollten bestehen,
+          bevor du weitermachst. Prüfe, ob deine Tests aus Kapitel 8 bei einem Warenwert von genau 50 € kostenlose
+          Lieferung erwarten. Falls nicht, ergänze in <code>tests/test_shipping.py</code> beispielsweise:</p>
+        <pre><code>from shopcore.shipping import calculate_shipping_costs
+
+
+def test_shipping_is_free_at_50():
+    assert calculate_shipping_costs(50) == 0</code></pre>
+        <p>Falls der Import bereits vorhanden ist, füge ihn nicht erneut hinzu. Führe die Tests nochmals aus und
+          überprüfe, dass sie bestehen. Der Grenzfall kann auch bereits Teil eines parametrisierten Tests sein.</p>
+        <h3>Aufgabe 11B · Beobachte eine Regression</h3>
+        <ol>
+          <li>Merke dir den ursprünglichen Code. Füge in <code>calculate_shipping_costs(total_price)</code> direkt
+            nach der Funktionszeile vorübergehend die folgenden zwei Zeilen ein:</li>
+        </ol>
+        <pre><code>    if total_price == 50:
+        return 4.90</code></pre>
+        <ol start="2">
+          <li>Führe <code>uv run pytest</code> aus. Suche den fehlgeschlagenen Test und vergleiche den erwarteten
+            Wert 0 mit dem tatsächlichen Wert 4,90. Auch weitere Tests können fehlschlagen.</li>
+          <li>Entferne die beiden eingefügten Zeilen wieder und führe die gesamte Testsuite erneut aus. Alle Tests
+            sollten wieder bestehen.</li>
+        </ol>
+        <div class="warning"><strong>Wichtig:</strong> Ändere nicht die erwartete Versandregel, nur damit der Test
+          besteht. Der Fehler wurde absichtlich im Anwendungscode eingefügt und muss dort wieder entfernt werden.
+          Committe den absichtlich fehlerhaften Zustand nicht.</div>
+        <h3>Nachdenken und besprechen</h3>
+        <ul>
+          <li>Warum reicht ein Test für einen Warenwert von 60 € nicht aus, um diesen Fehler zu entdecken?</li>
+          <li>Was würde passieren, wenn niemand die Tests nach einer Änderung ausführt?</li>
+          <li>Welche andere wichtige Geschäftsregel deiner Anwendung möchtest du dauerhaft absichern?</li>
+        </ul>
+        <div class="callout"><strong>Kontrollpunkt 11</strong><br>Du kannst eine Regression und den Nutzen eines
+          Regressionstests erklären. Du hast einen fehlgeschlagenen Test beobachtet, den absichtlichen Fehler entfernt
+          und die gesamte Testsuite wieder erfolgreich ausgeführt.</div>
+      </section>
+
+      <section id="chapter12" class="chapter">
+        <div class="chapter-head">
+          <div class="num">12</div>
+          <div>
+            <h2>Kontinuierliche Integration (CI)</h2>
+            <div class="sub">Ziel: Verstehe, wie Teams Änderungen regelmäßig zusammenführen und automatisch prüfen.
+            </div>
+          </div>
+        </div>
+        <h3>Warum brauchen Teams CI?</h3>
+        <p>Du kannst <code>uv run pytest</code> auf deinem eigenen Rechner ausführen. In einem Team arbeiten jedoch
+          mehrere Personen an Änderungen. Eine Person könnte vergessen, die Tests auszuführen, oder auf ihrem Rechner
+          andere Voraussetzungen haben. Kontinuierliche Integration (Continuous Integration, kurz CI) bedeutet, dass
+          Änderungen regelmäßig in die gemeinsame Codebasis integriert und dabei automatisch geprüft werden.</p>
+        <p>Die automatische Prüfung läuft typischerweise in einer separaten Umgebung. Sie ersetzt weder lokale Tests
+          noch die gemeinsame Prüfung des Codes. Sie gibt dem Team zusätzlich eine wiederholbare Rückmeldung zum
+          eingereichten Stand.</p>
+        <h3>Ein möglicher Ablauf</h3>
+        <ol>
+          <li>Eine Entwicklerin ändert ShopCore und führt die Tests lokal aus.</li>
+          <li>Sie erstellt einen Git-Commit und überträgt ihn mit <code>git push</code> an das gemeinsame Repository.
+            Ein Pull Request ist eine Anfrage, Änderungen in einen anderen Branch zu übernehmen.</li>
+          <li>Ein CI-Dienst startet für den Push oder Pull Request einen zuvor definierten Workflow. Ein Workflow
+            beschreibt, wann die Prüfung läuft und welche Schritte ausgeführt werden.</li>
+          <li>Der Workflow stellt eine Umgebung bereit, installiert das Projekt und startet die Tests. Anschließend
+            zeigt der Dienst das Ergebnis beim entsprechenden Commit oder Pull Request an.</li>
+          <li>Das Team prüft das Ergebnis und den Code. Bei Problemen untersucht es die Ausgabe, behebt die Ursache
+            und überträgt eine neue Änderung; der Workflow läuft dann erneut.</li>
+        </ol>
+        <div class="story"><strong>Beispiel aus ShopCore</strong><br>Eine Änderung verletzt die Versandregel bei
+          50 €. Der Versandtest schlägt in der CI fehl. Das Team sieht die fehlgeschlagene Prüfung, bevor es die
+          Änderung übernimmt, und kann den Fehler korrigieren.</div>
+        <h3>Ergebnisse verstehen</h3>
+        <ul>
+          <li><strong>Erfolgreich:</strong> Alle ausgeführten Schritte waren erfolgreich. Das ist kein Beweis, dass
+            die Anwendung fehlerfrei ist; nur die eingerichteten Prüfungen wurden bestanden.</li>
+          <li><strong>Fehlgeschlagen:</strong> Mindestens ein Schritt ist fehlgeschlagen. Öffne dessen Ausgabe: Ein
+            Test kann fehlschlagen, aber auch die Installation oder eine andere Einrichtung kann das Problem sein.</li>
+          <li><strong>Läuft noch:</strong> Das Ergebnis liegt noch nicht vor. Warte, bis der Workflow beendet ist.</li>
+        </ul>
+        <h3>Aufgabe 12A · Den Ablauf nachvollziehen</h3>
+        <p>Beschreibe für das Versandbeispiel, was lokal passiert und was auf dem CI-Dienst passiert. Beantworte:</p>
+        <ul>
+          <li>Welches Ereignis startet den Workflow und welcher Schritt führt die Tests aus?</li>
+          <li>Wo liest das Team nach, wenn die Prüfung fehlschlägt?</li>
+          <li>Warum bleiben lokale Tests und Code-Reviews auch mit CI wichtig?</li>
+        </ul>
+        <h3>Optionale Vertiefung · GitHub Actions</h3>
+        <p>GitHub Actions ist ein CI-Dienst von GitHub. Für diese Vertiefung benötigst du ein GitHub-Konto, ein eigenes
+          Repository mit deinem ShopCore-Projekt und aktivierte GitHub Actions. Lege darin die Datei
+          <code>.github/workflows/tests.yml</code> an:
+        </p>
+        <pre><code>name: Python-Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Python einrichten
+        run: uv python install 3.13
+      - name: Projekt installieren
+        run: uv sync --dev
+      - name: Tests ausführen
+        run: uv run pytest</code></pre>
+        <p>Unter <code>on</code> stehen die Auslöser: ein Push oder ein Pull Request. Der Job <code>test</code> läuft
+          auf einem Linux-Rechner von GitHub. Er lädt den Repository-Inhalt, richtet <code>uv</code> und Python ein,
+          installiert die Abhängigkeiten und führt schließlich dieselbe Testsuite wie lokal aus.</p>
+        <p>Prüfe mit <code>git remote -v</code>, wohin dein Projekt übertragen wird. Wenn du das ursprüngliche
+          ShopCore-Repository geklont hast, zeigt <code>origin</code> zunächst dorthin. Erstelle auf GitHub ein leeres
+          eigenes Repository und füge es beispielsweise als weiteren Remote hinzu. Ersetze die Platzhalter durch deinen
+          GitHub-Namen und den Namen deines Repositorys:</p>
+        <pre><code>git remote add mein-shopcore https://github.com/DEIN-NAME/DEIN-REPOSITORY.git</code></pre>
+        <p>Falls du bereits einen geeigneten Remote eingerichtet hast, verwende stattdessen dessen Namen. Prüfe mit
+          <code>git status</code>, ob deine Anwendung, Tests, Abhängigkeiten und die Workflow-Datei committed sind;
+          übertrage dann den aktuellen Branch. GitHub kann eine Anmeldung verlangen:
+        </p>
+        <pre><code>git push -u mein-shopcore HEAD</code></pre>
+        <p>Wenn dein Remote anders heißt, ersetze <code>mein-shopcore</code> im Befehl entsprechend.</p>
+        <p>Öffne dort den Reiter <strong>Actions</strong>, wähle den Lauf <strong>Python-Tests</strong> und öffne den
+          Job
+          <strong>test</strong>. Sieh dir die Ausgabe des Schritts <strong>Tests ausführen</strong> und den Status an.
+          Bei einem Fehler lies auch die Ausgabe früherer Schritte. Nach einer Korrektur startet ein neuer Push einen
+          neuen Lauf.
+        </p>
+        <p class="small">Dies ist ein Lehrbeispiel. Prüft vor der Übernahme in ein gepflegtes Repository die aktuellen
+          Action-Versionen und die uv-Empfehlungen für Workflows.</p>
+        <div class="callout"><strong>Kontrollpunkt 12</strong><br>Du kannst erklären, was einen CI-Workflow startet,
+          welche Schritte er ausführt und wie ein Team mit einem fehlgeschlagenen Ergebnis umgeht. Die GitHub-Actions-
+          Übung bleibt optional.</div>
+      </section>
+
+      <section id="final-project">
+        <h2>Abschlussaufgabe · Bereite ShopCore für ein Teammitglied vor</h2>
+        <p>Du hast den zentralen Lernpfad abgeschlossen. Gestalte dein Repository nun so, dass es auch für jemanden
+          verständlich und nützlich ist, der es nicht selbst entwickelt hat.</p>
+        <div class="card">
+          <h3>Ergebnisse</h3>
+          <div class="checklist">
+            <label><input type="checkbox"> Anwendungscode für Warenkorbpreise, Rabatte, Versandkosten und den
+              Checkout. Der Bestellablauf ist optional.</label>
+            <label><input type="checkbox"> Eine <code>CartItem</code>-Dataclass und eine klare Darstellung der
+              Daten und Typen.</label>
+            <label><input type="checkbox"> Tests für normale, grenzwertige und ungültige Fälle.</label>
+            <label><input type="checkbox"> Mindestens ein gut gewählter parametrisierter Test.</label>
+            <label><input type="checkbox"> Mindestens eine Fixture, sofern sie die Verständlichkeit verbessert.</label>
+            <label><input type="checkbox"> Tests, die Ausnahmen oder abgewiesene Vorgänge prüfen.</label>
+            <label><input type="checkbox"> Eine README-Datei mit Anweisungen zur Einrichtung und Testausführung.</label>
+            <label><input type="checkbox"> Ein erfolgreicher Lauf von <code>uv run pytest</code>.</label>
+          </div>
+        </div>
+        <h3>Fragen für die README</h3>
+        <ul>
+          <li>Was macht ShopCore?</li>
+          <li>Wie kann ein Teammitglied das Projekt einrichten?</li>
+          <li>Wie lassen sich die Tests ausführen?</li>
+          <li>Welche Geschäftsregeln sind implementiert?</li>
+          <li>Welche Annahmen oder offenen Fragen bleiben?</li>
+        </ul>
+        <h3>Team-Rückblick</h3>
+        Besprecht gemeinsam diese Fragen:
+        <ol>
+          <li>Was ließ sich leichter ändern, nachdem Tests vorhanden waren?</li>
+          <li>Welcher Test hat einen Fehler gefunden, den du bei einer manuellen Prüfung wahrscheinlich übersehen
+            hättest?</li>
+          <li>Was macht einen Test schwer verständlich oder wartbar?</li>
+          <li>Was würdest du als Nächstes testen, wenn ShopCore ein echter Dienst würde?</li>
+        </ol>
+      </section>
+
+      <section id="reference">
+        <h2>Kurzreferenz</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Gesucht</th>
+              <th>Technik in pytest / Python</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Einen Wert prüfen</td>
+              <td><code>assert actual == expected</code></td>
+            </tr>
+            <tr>
+              <td>Eine Ausnahme prüfen</td>
+              <td><code>with pytest.raises(ValueError): ...</code></td>
+            </tr>
+            <tr>
+              <td>Tests ausführen</td>
+              <td><code>uv run pytest</code></td>
+            </tr>
+            <tr>
+              <td>Eine Testdatei ausführen</td>
+              <td><code>uv run pytest tests/test_pricing.py</code></td>
+            </tr>
+            <tr>
+              <td>Einen benannten Test ausführen</td>
+              <td><code>uv run pytest -k empty_cart</code></td>
+            </tr>
+            <tr>
+              <td>Mehrere Beispiele verwenden</td>
+              <td><code>@pytest.mark.parametrize(...)</code></td>
+            </tr>
+            <tr>
+              <td>Testvorbereitung wiederverwenden</td>
+              <td><code>@pytest.fixture</code></td>
+            </tr>
+            <tr>
+              <td>Ein einfaches Datenobjekt darstellen</td>
+              <td><code>@dataclass</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>Begriffe rund ums Testen</h3>
+        <ul>
+          <li><strong>Testfall:</strong> eine bestimmte Situation und das dafür erwartete Verhalten.</li>
+          <li><strong>Assertion (Prüfung):</strong> Kontrolle, ob eine Bedingung wahr ist.</li>
+          <li><strong>Grenzfall:</strong> eine ungewöhnliche oder grenzwertige Eingabe, die geprüft werden sollte.</li>
+          <li><strong>Regression:</strong> eine Änderung, durch die zuvor funktionierendes Verhalten beeinträchtigt
+            wird.</li>
+          <li><strong>Refactoring:</strong> strukturelle Änderung ohne beabsichtigte Änderung des Verhaltens.</li>
+          <li><strong>Fixture:</strong> wiederverwendbare Testvorbereitung oder Daten, die Tests bereitgestellt werden.
+          </li>
+          <li><strong>CI:</strong> automatisierte Prüfungen während der Integration von Codeänderungen.</li>
+        </ul>
+      </section>
+
+      <section id="chapter13" class="chapter">
+        <div class="chapter-head">
+          <div class="num">13</div>
+          <div>
+            <h2>Abschlusstest</h2>
+            <div class="sub">Ziel: Überprüfe dein Verständnis der Kursthemen.</div>
+          </div>
+        </div>
+        <p>Wähle für jede Frage eine Antwort. Du erhältst sofort eine Rückmeldung und kannst deine Antwort ändern.
+          Mit „Test zurücksetzen“ kannst du beliebig oft neu beginnen.</p>
+        <noscript>
+          <div class="warning">Für den Abschlusstest muss JavaScript im Browser aktiviert sein.</div>
+        </noscript>
+        <form id="course-quiz">
+          <p id="quiz-score" role="status" aria-live="polite"></p>
+          <div id="quiz-questions"></div>
+          <button class="quiz-reset" type="reset">Test zurücksetzen</button>
+        </form>
+      </section>
+
+    </main>
+  </div>
+  <footer>ShopCore · Praxisnaher Kurs zum Testen mit Python · Verstehen, testen und dann sicher verändern.
+  </footer>
+  <script>
+    const quizQuestions = [
+      {
+        question: "Eine Funktion besteht alle vorhandenen Tests. Was lässt sich daraus zuverlässig ableiten?",
+        options: ["Die Funktion erfüllt alle Anforderungen, auch für ungetestete Eingaben.", "Die ausgeführten Tests haben ihre jeweiligen Erwartungen unter diesen Bedingungen erfüllt.", "Die Implementierung kann durch spätere Änderungen nicht mehr fehlerhaft werden."],
+        answer: 1,
+        explanation: "Ein erfolgreicher Testlauf bestätigt nur die geprüften Erwartungen unter den Bedingungen des Testlaufs."
+      },
+      {
+        question: "Ein Test schlägt nach einer Änderung fehl. Was ist ein sinnvoller erster Schritt?",
+        options: ["Die erwarteten Werte sofort an das tatsächliche Ergebnis anpassen.", "Den Test entfernen, wenn die übrigen Tests bestehen.", "Fehlermeldung und Anforderung vergleichen, bevor Test oder Anwendungscode geändert werden."],
+        answer: 2,
+        explanation: "Ein Fehlschlag kann auf einen Fehler im Anwendungscode, im Test oder auf eine unklare Anforderung hinweisen."
+      },
+      {
+        question: "Welche Datei und Funktion erkennt pytest ohne angepasste Konfiguration standardmäßig als Test?",
+        options: ["berechnung.py mit test_summe", "test_berechnung.py mit test_summe", "test_berechnung.py mit pruefe_summe"],
+        answer: 1,
+        explanation: "Standardmäßig findet pytest unter anderem Dateien namens test_*.py und darin Funktionen, deren Namen mit test_ beginnen."
+      },
+      {
+        question: "Ein Test erstellt Eingabedaten, ruft eine Funktion auf und vergleicht das Ergebnis mit 12. Welcher Schritt ist Assert?",
+        options: ["Die Eingabedaten erstellen.", "Die Funktion aufrufen.", "Das Ergebnis mit 12 vergleichen."],
+        answer: 2,
+        explanation: "Assert ist die Prüfung der erwarteten Wirkung; Vorbereitung und Aufruf entsprechen Arrange und Act."
+      },
+      {
+        question: "Eine Funktion akzeptiert ganze Zahlen von 1 bis einschließlich 10. Welche Auswahl prüft die Grenzen am besten?",
+        options: ["2, 5 und 9", "0, 1, 10 und 11", "1, 5 und 10"],
+        answer: 1,
+        explanation: "0 und 11 liegen direkt außerhalb, 1 und 10 genau auf den gültigen Grenzen."
+      },
+      {
+        question: "Was passiert, wenn der Aufruf innerhalb von pytest.raises(ValueError) keine Ausnahme auslöst?",
+        options: ["Der Test schlägt fehl.", "Der Test besteht, weil keine unerwartete Ausnahme auftritt.", "pytest überspringt den Test automatisch."],
+        answer: 0,
+        explanation: "pytest.raises erwartet die angegebene Ausnahme. Bleibt sie aus, meldet pytest einen fehlgeschlagenen Test."
+      },
+      {
+        question: "Eine Dataclass hat das Feld menge: int. Welche Aussage über die Laufzeit ist richtig?",
+        options: ["Python wandelt jede Eingabe automatisch in int um.", "Die Annotation allein lehnt Zeichenketten beim Erstellen nicht automatisch ab.", "Die Annotation stellt sicher, dass menge nicht negativ ist."],
+        answer: 1,
+        explanation: "Typannotationen dokumentieren erwartete Typen, erzwingen aber ohne zusätzliche Prüfung keine Laufzeitvalidierung."
+      },
+      {
+        question: "Beim Refactoring wird ein Dictionary durch eine Dataclass ersetzt. Was sollten die angepassten Tests weiterhin prüfen?",
+        options: ["Dass die Testdateien unverändert bleiben, auch wenn sie nicht mehr ausführbar sind.", "Dass alle internen Variablennamen erhalten bleiben.", "Dass die vereinbarten Verhaltenserwartungen weiterhin erfüllt werden."],
+        answer: 2,
+        explanation: "Die Testvorbereitung kann sich ändern, wenn sich die Schnittstelle ändert; fachliche Erwartungen sollen erhalten bleiben."
+      },
+      {
+        question: "Ein parametrisierter Test erhält vier Parametersätze. Wie viele Testfälle führt pytest dafür aus?",
+        options: ["Vier Testfälle mit demselben Testkörper.", "Einen Testfall mit einer Liste aller Ergebnisse.", "Nur den ersten Testfall, sofern er besteht."],
+        answer: 0,
+        explanation: "pytest führt für jeden Parametersatz einen eigenen Testfall aus und meldet die Ergebnisse einzeln."
+      },
+      {
+        question: "Eine neue Funktion soll ungültige Werte abweisen, aber die Anforderung nennt keine konkrete Ausnahme. Was solltest du zuerst tun?",
+        options: ["Im Test jede Ausnahme akzeptieren und den Vertrag nicht dokumentieren.", "Das erwartete Fehlerverhalten klären und als Teil des Vertrags festhalten.", "Annehmen, dass immer TypeError erwartet wird."],
+        answer: 1,
+        explanation: "Tests brauchen eine klare Erwartung. Bei unbestimmtem Fehlerverhalten sollte der Vertrag zunächst geklärt werden."
+      },
+      {
+        question: "Was ist bei einem testgetriebenen Vorgehen ein sinnvoller nächster Schritt nach einem aussagekräftig fehlgeschlagenen Test?",
+        options: ["Den Test löschen und ein anderes Feature beginnen.", "Den erwarteten Wert ohne Prüfung der Anforderung ändern.", "Die benötigte Funktionalität implementieren und den Test erneut ausführen."],
+        answer: 2,
+        explanation: "Nach einem aussagekräftigen Fehlschlag wird die Anforderung implementiert und anschließend erneut geprüft."
+      },
+      {
+        question: "Weshalb kann assert 0.1 + 0.2 == 0.3 fehlschlagen?",
+        options: ["pytest kann grundsätzlich keine Zahlen vergleichen.", "Binäre float-Werte stellen manche Dezimalzahlen nicht exakt dar.", "Python rundet jede Addition auf ganze Zahlen."],
+        answer: 1,
+        explanation: "Für geeignete numerische Vergleiche kann pytest.approx eine Toleranz berücksichtigen; Geld benötigt zusätzlich klare Rundungsregeln."
+      },
+      {
+        question: "Zwei Tests fordern dieselbe mutable Fixture mit dem Standardscope an. Was gilt?",
+        options: ["pytest erstellt die Fixture standardmäßig für jeden Test neu.", "Beide Tests teilen immer dieselbe Instanz über die gesamte Testsitzung.", "Eine Fixture kann nur von einem einzigen Test angefordert werden."],
+        answer: 0,
+        explanation: "Der Standard-Scope ist function: Jeder Test erhält eine eigene Fixture-Ausführung. Andere Scopes können ausdrücklich gewählt werden."
+      },
+      {
+        question: "Wann ist eine Fixture für Testdaten besonders sinnvoll?",
+        options: ["Wenn jede einzelne Eingabe grundsätzlich hinter einer Fixture versteckt werden soll.", "Wenn sie eine mehrfach benötigte Vorbereitung verständlich bereitstellt.", "Nur wenn der Test eine externe Datenbank verwendet."],
+        answer: 1,
+        explanation: "Fixtures helfen bei sinnvoller gemeinsamer Vorbereitung. Einfache einmalige Daten können direkt im Test klarer sein."
+      },
+      {
+        question: "Welcher Test prüft am ehesten die Integration mehrerer Komponenten?",
+        options: ["Ein Test verwendet eine Fixture für eine einzelne Funktion.", "Ein Test prüft eine einzelne Berechnungsfunktion mit mehreren Eingaben.", "Ein Test prüft den Ablauf, der mehrere echte Funktionen miteinander kombiniert."],
+        answer: 2,
+        explanation: "Entscheidend ist das geprüfte Zusammenspiel echter Komponenten. Eine Fixture allein macht einen Test nicht zum Integrationstest."
+      },
+      {
+        question: "Ein Vorgang soll bei ungültiger Eingabe abgewiesen werden, ohne vorhandene Daten zu verändern. Was sollte der Test prüfen?",
+        options: ["Nur, dass der Vorgang schnell ausgeführt wird.", "Die Abweisung und den unveränderten Zustand der Daten.", "Nur, dass vor dem Vorgang Daten vorhanden waren."],
+        answer: 1,
+        explanation: "Die Anforderung umfasst sowohl das Fehlerverhalten als auch die ausbleibende Zustandsänderung."
+      },
+      {
+        question: "Ein behobener Fehler soll bei späteren Änderungen nicht unbemerkt zurückkehren. Welche Maßnahme hilft direkt?",
+        options: ["Einen Test für den Fehlerfall dauerhaft in die Testsuite aufnehmen und regelmäßig ausführen.", "Nur das Datum der Fehlerbehebung dokumentieren.", "Den Test nach der erfolgreichen Fehlerbehebung löschen."],
+        answer: 0,
+        explanation: "Ein Regressionstest hält die erwartete Wirkung für den früheren Fehlerfall fest und kann spätere Rückfälle erkennen."
+      },
+      {
+        question: "Ein CI-Workflow schlägt fehl, bevor pytest startet. Was ist die sinnvollste Schlussfolgerung?",
+        options: ["Alle Tests sind fehlgeschlagen.", "Die Anwendung muss fachlich falsch sein.", "Die Ausgabe des fehlgeschlagenen Schritts untersuchen, etwa die Installation."],
+        answer: 2,
+        explanation: "Ein CI-Fehler kann auch durch Einrichtung oder Installation entstehen. Die Schrittausgabe zeigt, wo die Prüfung gescheitert ist."
+      }
+    ];
+
+    const quizForm = document.getElementById("course-quiz");
+    const quizContainer = document.getElementById("quiz-questions");
+    const quizScore = document.getElementById("quiz-score");
+
+    function updateQuizScore() {
+      let answered = 0;
+      let correct = 0;
+      quizQuestions.forEach((question, index) => {
+        const selected = quizForm.querySelector(`input[name="question-${index}"]:checked`);
+        if (selected) {
+          answered += 1;
+          if (Number(selected.value) === question.answer) correct += 1;
+        }
+      });
+      quizScore.textContent = `${answered} von ${quizQuestions.length} beantwortet · ${correct} richtig`;
+    }
+
+    quizQuestions.forEach((question, index) => {
+      const fieldset = document.createElement("fieldset");
+      fieldset.className = "quiz-question";
+      fieldset.dataset.index = index;
+      const legend = document.createElement("legend");
+      legend.textContent = `${index + 1}. ${question.question}`;
+      fieldset.append(legend);
+      question.options.forEach((option, optionIndex) => {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "radio";
+        input.name = `question-${index}`;
+        input.value = optionIndex;
+        const text = document.createElement("span");
+        text.textContent = option;
+        label.append(input, text);
+        fieldset.append(label);
+      });
+      const feedback = document.createElement("p");
+      feedback.className = "quiz-feedback";
+      feedback.setAttribute("role", "status");
+      feedback.setAttribute("aria-live", "polite");
+      fieldset.append(feedback);
+      quizContainer.append(fieldset);
+    });
+
+    quizForm.addEventListener("change", (event) => {
+      if (event.target.type !== "radio") return;
+      const fieldset = event.target.closest("fieldset");
+      const question = quizQuestions[Number(fieldset.dataset.index)];
+      const isCorrect = Number(event.target.value) === question.answer;
+      const feedback = fieldset.querySelector(".quiz-feedback");
+      feedback.classList.toggle("incorrect", !isCorrect);
+      feedback.textContent = `${isCorrect ? "Richtig." : "Leider falsch."} ${question.explanation}`;
+      updateQuizScore();
+    });
+
+    quizForm.addEventListener("reset", () => {
+      quizForm.querySelectorAll(".quiz-feedback").forEach((feedback) => {
+        feedback.textContent = "";
+        feedback.classList.remove("incorrect");
+      });
+      quizScore.textContent = `0 von ${quizQuestions.length} beantwortet · 0 richtig`;
+    });
+
+    updateQuizScore();
+  </script>
+</body>
+
+</html>
