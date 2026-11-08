@@ -1,6 +1,9 @@
-# Ignore everything by default
+# 1. Ignore everything at the root level by default
 *
 
-# Un-ignore the specific files you want to keep
+# 2. Allow the .gitignore file itself so it stays tracked
 !.gitignore
-!index.html
+
+# 3. Allow the docs/ folder and everything inside it
+!docs/
+!docs/**
