@@ -1,0 +1,39 @@
+Aufgabe 2: 
+was hat dir pytest mitgeteil: 
+===================================================== FAILURES ======================================================
+_______________________________________________ test_calculate_total ________________________________________________
+
+    def test_calculate_total():
+        items = [
+            {"price": 10, "quantity": 2},
+            {"price": 5, "quantity": 3},
+        ]
+    
+        result = calculate_total(items)
+    
+>       assert result == 34
+E       assert 35 == 34
+
+test\test_prysing.py:12: AssertionError
+============================================== short test summary info ==============================================
+FAILED test/test_prysing.py::test_calculate_total - assert 35 == 34
+
+Warum ist das hilfreicher als eine print-Anweisung?
+
+Warum ist ein fehlgeschlagener Test nicht zwangsläufig ein fehlerhafter Test?
+
+===========================================================================================
+
+Aufgabe 3 B 
+Beschreibe den Fehler in einem Satz.
+- Er kann den Wert -20 nicht berechnen weil er nicht unter 0 gehen darf
+
+
+Welche Testeingabe macht ihn sichtbar?
+-20 == 0
+Würdest du die Anforderung oder den Code ändern? Warum?
+Nein, da es ansich keine - Werte geben soll 
+
+=============================================================================================
+
+Aufgabe 4
